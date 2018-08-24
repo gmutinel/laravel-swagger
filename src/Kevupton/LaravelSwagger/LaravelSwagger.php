@@ -7,11 +7,11 @@ use Kevupton\LaravelSwagger\Exceptions\DynamicMethodException;
 use Laravel\Lumen\Application;
 use ReflectionClass;
 use Schema;
-use Swagger\Analysis;
-use Swagger\Annotations\Definition;
-use Swagger\Annotations\Property;
-use Swagger\Annotations\Swagger;
-use Swagger\Context;
+use OpenApi\Analysis;
+use OpenApi\Annotations\Definition;
+use OpenApi\Annotations\Property;
+use OpenApi\Annotations\Swagger;
+use OpenApi\Context;
 
 class LaravelSwagger
 {
@@ -42,14 +42,14 @@ class LaravelSwagger
     }
 
     /**
-     * Adds the Host to the Swagger annotation
+     * Adds the Host to the OpenApi annotation
      *
      * @param Analysis $analysis
      */
     private function add_host(Analysis $analysis)
     {
-        /** @var Swagger[] $annotation */
-        $annotation = $analysis->getAnnotationsOfType(Swagger::class);
+        /** @var OpenApi[] $annotation */
+        $annotation = $analysis->getAnnotationsOfType(OpenApi::class);
 
         if (isset($annotation[0])) {
             if ($annotation[0]->host != '') {
@@ -61,7 +61,7 @@ class LaravelSwagger
     }
 
     /**
-     * Loads the Controllers into the Swagger JSON
+     * Loads the Controllers into the OpenApi JSON
      *
      * @param Analysis $analysis
      */
@@ -86,7 +86,7 @@ class LaravelSwagger
 
                     $handler->method()->data('path', $route['uri']);
 
-                    $context = new Context(['class' => $controller]);
+                    $context = new Context(['class' => $controller, 'comment' => '']);
 
                     $analysis->addAnnotation($handler->method()->make($context), $context);
                 }
@@ -232,7 +232,7 @@ class LaravelSwagger
                     'properties' => $properties,
                 ]);
 
-                $analysis->addAnnotation($definition, new Context(['-', $model]));
+                $analysis->addAnnotation($definition, new Context(['-', $model, 'comment' => '']));
             }
         }
     }

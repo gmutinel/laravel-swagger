@@ -1,11 +1,11 @@
 <?php namespace Kevupton\LaravelSwagger;
 
-use Swagger\Analysis;
-use Swagger\Annotations\Swagger;
+use OpenApi\Analysis;
+use OpenApi\Annotations\Swagger;
 use Symfony\Component\Finder\Finder;
 
 /**
- * Same as the Swagger\scan however allows for LaravelModels
+ * Same as the OpenApi\scan however allows for LaravelModels
  *
  * @param string|array|Finder $directory The directory(s) or filename(s)
  * @param array $options
@@ -14,7 +14,7 @@ use Symfony\Component\Finder\Finder;
  *   analysis: defaults to a new Analysis
  *   processors: defaults to the registered processors in Analysis
  *   models: the laravel models to convert into definitions
- * @return Swagger
+ * @return OpenApi
  */
 function scan($directory, $options = array())
 {
@@ -22,5 +22,5 @@ function scan($directory, $options = array())
     $options['processors'] = @$options['processors'] ?:
         array_merge([new LaravelSwagger($models)], Analysis::processors());
 
-    return \Swagger\scan($directory, $options);
+    return \OpenApi\scan($directory, $options);
 }

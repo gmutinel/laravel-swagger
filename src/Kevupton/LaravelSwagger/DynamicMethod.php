@@ -1,15 +1,15 @@
 <?php namespace Kevupton\LaravelSwagger;
 
-use Swagger\Annotations\AbstractAnnotation;
-use Swagger\Annotations\Delete;
-use Swagger\Annotations\Get;
-use Swagger\Annotations\Head;
-use Swagger\Annotations\Operation;
-use Swagger\Annotations\Options;
-use Swagger\Annotations\Patch;
-use Swagger\Annotations\Post;
-use Swagger\Annotations\Put;
-use Swagger\Context;
+use OpenApi\Annotations\AbstractAnnotation;
+use OpenApi\Annotations\Delete;
+use OpenApi\Annotations\Get;
+use OpenApi\Annotations\Head;
+use OpenApi\Annotations\Operation;
+use OpenApi\Annotations\Options;
+use OpenApi\Annotations\Patch;
+use OpenApi\Annotations\Post;
+use OpenApi\Annotations\Put;
+use OpenApi\Context;
 
 class DynamicMethod {
 
@@ -175,6 +175,8 @@ class DynamicMethod {
     public function make(Context $context) {
         $class = $this->method;
         $this->_make_parent($this->data, $context);
+        $this->data['_context'] = Context::detect(1);
+        $this->data['_context']->comment = '';
         return new $class($this->data);
     }
 
@@ -187,7 +189,7 @@ class DynamicMethod {
     private function _make_parent(&$array, Context $context) {
         foreach ($array as $key => $value) {
             if ($value instanceof AbstractAnnotation) {
-                $child = new Context(['nested'=>true, 'class' => $context->class], $context);
+                $child = new Context(['nested'=>true, 'class' => $context->class, 'comment' => ''], $context);
                 $value->_context = $child;
                 $this->_make_parent($value, $child);
             } else if (is_array($value)) {
